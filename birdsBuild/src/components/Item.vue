@@ -11,6 +11,7 @@ export default {
   data() {
     return {
       isFavorite: false,
+      isPayed: false,
     };
   },
 
@@ -27,13 +28,8 @@ export default {
     }),
     addDeals() {
       this.addToDeals(this.product);
+      this.isPayed = !this.isPayed;
     },
-  },
-
-  computed: {
-    ...mapGetters({
-      getIsInDeal: "deals/getIsInDeal",
-    }),
   },
 };
 </script>
@@ -67,16 +63,35 @@ export default {
     <div class="price">
       <div class="item_price">{{ product.price }} Р</div>
       <div class="item_amount">
-        <div>Количество</div>
+        <div style="color: #969dc3">Количество</div>
         <div style="color: #2d3b87">{{ product.item_amount }} шт</div>
       </div>
       <div class="price_per_item">
-        <div>Стоимость за штуку</div>
+        <div style="color: #969dc3">Стоимость за штуку</div>
         <div style="color: #2d3b87">{{ product.price_per_item }} Р</div>
       </div>
       <div class="price__btns">
-        <button @click="addDeals" class="deal_btn" :disabled="getIsInDeal">
-          {{ getIsInDeal ? "Оплатить" : "Добавить в сделки" }}
+        <button
+          @click="addDeals"
+          class="deal_btn"
+          v-if="$route.path === '/deals'"
+          :class="{ toPay: isPayed }"
+        >
+          {{ isPayed ? "Оплачено" : "Оплатить" }}
+        </button>
+        <button
+          @click="addDeals"
+          class="deal_btn"
+          v-else-if="$route.path === '/'"
+        >
+          Добавить в сделки
+        </button>
+        <button
+          @click="addDeals"
+          class="deal_btn"
+          v-else-if="$route.path === '/favorite'"
+        >
+          Добавить в сделки
         </button>
         <button
           @click="addToFavorite"
@@ -91,6 +106,10 @@ export default {
 </template>
 
 <style scoped>
+.toPay {
+  background: #69c57f;
+}
+
 .container {
   display: flex;
   border: 1px solid #e0e3ee;
@@ -134,11 +153,14 @@ img {
 .item_price {
   font-size: 20px;
   color: #2d3b87;
+  font-weight: 500;
 }
 .item_amount {
   display: flex;
   justify-content: space-between;
   font-size: 13px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 .price_per_item {
   display: flex;
@@ -169,7 +191,6 @@ img {
 .deal_btn {
   height: 50px;
   width: 212px;
-  background: #f4f5f9;
   border: none;
   color: #2d3b87;
   border-radius: 10px;
@@ -231,6 +252,10 @@ img {
 }
 
 .active {
-  background: #2d3b87;
+  background: rgba(45, 59, 135, 0.3);
+}
+
+button {
+  cursor: pointer;
 }
 </style>

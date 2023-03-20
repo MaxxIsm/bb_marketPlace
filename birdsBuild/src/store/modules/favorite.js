@@ -39,7 +39,7 @@ export const favoriteModule = {
     addFavorite(state, product) {
       if (!state.favorites.includes(product)) {
         state.favorites.push(product);
-        localStorage.setItem("favorites", JSON.stringify(state.favorites));
+        sessionStorage.setItem("favorites", JSON.stringify(state.favorites));
       } else {
         this.commit("removeFavorite", product);
       }
@@ -50,14 +50,14 @@ export const favoriteModule = {
       const index = state.favorites.find((p) => p.id === product.id);
       if (index !== -1) {
         state.favorites.splice(index, 1);
-        localStorage.setItem("favorites", JSON.stringify(state.favorites));
+        sessionStorage.setItem("favorites", JSON.stringify(state.favorites));
       }
     },
 
     // SETS
     setFavoriteProducts(state, products) {
       state.favorites = products;
-      localStorage.setItem("favorites", JSON.stringify(state.favorites));
+      sessionStorage.setItem("favorites", JSON.stringify(state.favorites));
     },
 
     setSelectedFavoriteType(state, type) {
@@ -81,7 +81,7 @@ export const favoriteModule = {
     },
 
     getFavoriteProducts({ commit }) {
-      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      const favorites = JSON.parse(sessionStorage.getItem("favorites")) || [];
       commit("setFavoriteProducts", favorites);
     },
   },

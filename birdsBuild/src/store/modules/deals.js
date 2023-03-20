@@ -5,7 +5,6 @@ export const dealsModule = {
     deals: [],
     selectedType: "Все типы",
     searchQuery: "",
-    isInDeal: false,
   }),
 
   // GETTERS
@@ -36,8 +35,12 @@ export const dealsModule = {
 
   mutations: {
     addToDeals(state, product) {
-      state.deals.push(product);
-      localStorage.setItem("deals", JSON.stringify(state.deals));
+      if (!state.deals.includes(product)) {
+        state.deals.push(product);
+        sessionStorage.setItem("deals", JSON.stringify(state.deals));
+      } else {
+        return;
+      }
     },
     removeFromDeals(state, product) {
       state.deals = state.deals.filter((p) => p.id !== product.id);
@@ -45,7 +48,7 @@ export const dealsModule = {
 
     setDealProducts(state, products) {
       state.deals = products;
-      localStorage.setItem("deals", JSON.stringify(state.deals));
+      sessionStorage.setItem("deals", JSON.stringify(state.deals));
     },
 
     setIsInDeal(state, isInDeal) {
@@ -64,16 +67,14 @@ export const dealsModule = {
 
   actions: {
     addToDeal({ commit, state }, product) {
+      const index = state.favorites.findIndex((p) => p.id === product.id);
       const isInDeal = state.deals.some((p) => p.id === product.id);
-      if (!isInDeal) {
+      if (index === -1) {
         commit("addToDeals", product);
-        commit("setIsInDeal", true);
-      } else {
-        commit("setIsInDeal", true);
       }
     },
     getDealProducts({ commit }) {
-      const deals = JSON.parse(localStorage.getItem("deals")) || [];
+      const deals = JSON.parse(sessionStorage.getItem("deals")) || [];
       commit("setDealProducts", deals);
     },
   },
